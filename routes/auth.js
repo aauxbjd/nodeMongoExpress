@@ -3,7 +3,8 @@ const User = require('../model/User');
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const { registerValidation, loginValidation } = require('../validation'); 'const'
+const { registerValidation, loginValidation } = require('../validation'); 
+const verifyToken = require('../routes/verifyToken');
 
 //Registration
 router.post('/register', async (req, res) => {
@@ -27,6 +28,7 @@ router.post('/register', async (req, res) => {
         password: hashedPassword
     });
 
+    //save user
     try {
         const savedUser = await user.save();
         res.send({ userID: user._id });
@@ -52,8 +54,45 @@ router.post('/login', async (req, res) => {
     //Create and assign a token
     const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
     res.header('auth-token', token).send(token);
+});
+
+//post
+router.post('/post',verifyToken, async (req, res) => {
+    //console.log(req.headers['authorization'])
+    res.status(200).send('posted......');
 
 });
+
+//Verify token
+// function verifyToken(req,res,next){
+//     //get auth header
+//     const bearerHeader = req.headers['authorization'];
+//     if(typeof bearerHeader !== 'undefined'){
+//         const bearer = bearerHeader.split(' ');
+//         const bearerToken = bearer[1];
+//         //req.token = bearerToken;
+
+//         jwt.verify(bearerToken,process.env.TOKEN_SECRET,(err,authData)=>{
+//             if(err){
+//                 res.status(403).send(err);
+//             }else{
+//                 res.json({
+//                     message: 'Posted...',
+//                     // authDatareq.authData = authData
+//                     // next()
+//                 });
+//             }
+//         });
+
+//         next();
+
+//     }
+//     else{
+//         res.status(401).send('error verify token');
+//     }
+// }
+
+
 
 
 module.exports = router;
