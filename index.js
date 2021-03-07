@@ -14,11 +14,13 @@ mongoose.connect(process.env.DB_CONNECT, {
     useUnifiedTopology: true
 }, () => console.log('\nConnected to DB'));
 
-// middleware
+// Json middleware
 app.use(express.json());
 
 // Route middleware
 app.use('/api/user', authRoute);
+
 app.use('/api/posts', postRoute);
+
 
 app.listen(5000, () => console.log('Server running'));

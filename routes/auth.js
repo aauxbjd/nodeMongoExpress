@@ -1,5 +1,6 @@
 const { hash } = require('bcryptjs');
 const User = require('../model/User');
+//const Post = require('../model/');
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -51,47 +52,17 @@ router.post('/login', async (req, res) => {
     const validPass = await bcrypt.compare(req.body.password, user.password)
     if (!validPass) return res.status(400).send('Invalid password')
 
+    const userr= user.name;
     //Create and assign a token
     const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-    res.header('auth-token', token).send(token);
+    res.header('auth-token', token).json({id:user._id,email:user.email,token:token});
 });
-
+ 
 //post
-router.post('/post',verifyToken, async (req, res) => {
-    //console.log(req.headers['authorization'])
+router.post('/posts',verifyToken, async (req, res) => {
     res.status(200).send('posted......');
 
 });
-
-//Verify token
-// function verifyToken(req,res,next){
-//     //get auth header
-//     const bearerHeader = req.headers['authorization'];
-//     if(typeof bearerHeader !== 'undefined'){
-//         const bearer = bearerHeader.split(' ');
-//         const bearerToken = bearer[1];
-//         //req.token = bearerToken;
-
-//         jwt.verify(bearerToken,process.env.TOKEN_SECRET,(err,authData)=>{
-//             if(err){
-//                 res.status(403).send(err);
-//             }else{
-//                 res.json({
-//                     message: 'Posted...',
-//                     // authDatareq.authData = authData
-//                     // next()
-//                 });
-//             }
-//         });
-
-//         next();
-
-//     }
-//     else{
-//         res.status(401).send('error verify token');
-//     }
-// }
-
 
 
 
